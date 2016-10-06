@@ -1,7 +1,12 @@
 var path = require('path')
 module.exports = {
+  devServer: {
+    contentBase: 'public/',
+    inline: true,
+    host: '0.0.0.0'
+  },
   entry: {
-    main: ['./src/main.js']
+    main: ['babel-polyfill', './src/main.js']
   },
   output: {
     path: path.resolve(__dirname, 'build'),

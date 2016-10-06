@@ -4,15 +4,22 @@
   "version": "1.0.0",
   "name": "opengl-ironhee-study",
   "scripts": {
-    "start": "webpack-dev-server --content-base public/"
+    "start": "webpack-dev-server"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
+    "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
-    "standard": "*",
+    "standard": "^8.3.0",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.1"
+  },
+  "dependencies": {
+    "lodash": "^4.16.2",
+    "rx-dom": "^7.0.3",
+    "stats.js": "^0.16.0",
+    "three": "^0.81.2"
   }
 }
