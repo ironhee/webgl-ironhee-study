@@ -9,9 +9,10 @@ import { REMOVE_MODE, ADD_MODE } from './ducks/app'
 import scene from './scene'
 import animate from './animate'
 import renderer from './renderer'
+import { getIntersects } from './raycaster'
 import Mode from './components/Mode'
 import Box from './meshes/Box'
-import { interactStream, mousemoveStream } from './streams'
+import { clickStream, mousemoveStream } from './streams'
 
 export default function init () {
   ReactDOM.render(
@@ -24,13 +25,13 @@ export default function init () {
   document.body.appendChild(renderer.domElement)
   window.requestAnimationFrame(animate)
 
-  interactStream
+  clickStream
     .filter(() => store.getState().app.mode === REMOVE_MODE)
     .subscribe((intersect) => {
       scene.remove(intersect.object)
     })
 
-  interactStream
+  clickStream
     .filter(() => store.getState().app.mode === ADD_MODE)
     .subscribe((intersect) => {
       const newBox = new Box()
@@ -42,6 +43,7 @@ export default function init () {
 
   let highlightedBox = null
   mousemoveStream
+    .map(getIntersects)
     .subscribe((intersects) => {
       if (intersects.length === 0) {
         if (!highlightedBox) return
