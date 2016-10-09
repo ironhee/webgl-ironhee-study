@@ -8,6 +8,10 @@ import scene from './scene'
 import camera from './camera'
 import renderer from './renderer'
 
+camera.position.x = CAMERA_RADIUS * 4
+camera.position.y = CAMERA_RADIUS * 1
+camera.position.z = CAMERA_RADIUS * 4
+
 // Attach stats
 const stats = new Stats()
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom

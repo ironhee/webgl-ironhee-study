@@ -9,9 +9,9 @@ import { REMOVE_MODE, ADD_MODE } from './ducks/app'
 import scene from './scene'
 import animate from './animate'
 import renderer from './renderer'
-import interactStream from './streams/interactStream'
 import Mode from './components/Mode'
 import Box from './meshes/Box'
+import { interactStream, mousemoveStream } from './streams'
 
 export default function init () {
   ReactDOM.render(
@@ -38,5 +38,21 @@ export default function init () {
       newBox.position.add(intersect.face.normal)
       newBox.position.divideScalar(BOX_SIZE).floor().multiplyScalar(BOX_SIZE).addScalar(BOX_SIZE / 2)
       scene.add(newBox)
+    })
+
+  let highlightedBox = null
+  mousemoveStream
+    .subscribe((intersects) => {
+      if (intersects.length === 0) {
+        if (!highlightedBox) return
+        highlightedBox.removeHighlight()
+        highlightedBox = null
+        return
+      } else {
+        const intersect = intersects[0]
+        if (highlightedBox) highlightedBox.removeHighlight()
+        intersect.object.highlight()
+        highlightedBox = intersect.object
+      }
     })
 }

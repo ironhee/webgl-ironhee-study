@@ -1,21 +1,36 @@
 import {
   BoxBufferGeometry,
   MeshLambertMaterial,
-  Mesh
+  Mesh,
+  TextureLoader,
+  NearestFilter,
+  LinearMipMapLinearFilter
 } from 'three'
 import {
   BOX_SIZE
 } from '../config'
 
-const material = new MeshLambertMaterial({
-  // color: Math.random() * 0xffffff
-  color: 0x00ffff,
-  overdraw: 0.5
-})
+const boxTexture = new TextureLoader().load('textures/box.jpg')
+boxTexture.magFilter = NearestFilter
+boxTexture.minFilter = LinearMipMapLinearFilter
 
 class Box extends Mesh {
-  constructor (geometry = new BoxBufferGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE)) {
+  constructor (
+    geometry = new BoxBufferGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE),
+    material = new MeshLambertMaterial({ map: boxTexture })
+  ) {
+    geometry.computeBoundingSphere()
     super(geometry, material)
+    this.basicColor = this.material.color.getHex()
+    this.highlightColor = 0xff0000
+  }
+
+  highlight () {
+    this.material.color.setHex(this.highlightColor)
+  }
+
+  removeHighlight () {
+    this.material.color.setHex(this.basicColor)
   }
 }
 

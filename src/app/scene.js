@@ -1,10 +1,8 @@
+import _ from 'lodash'
 import {
   Scene,
   AmbientLight,
-  DirectionalLight,
-  PlaneGeometry,
-  MeshBasicMaterial,
-  Mesh
+  DirectionalLight
 } from 'three'
 import {
   BOX_SIZE
@@ -31,34 +29,15 @@ directionalLight2.position.z = Math.random() - 0.5
 directionalLight2.position.normalize()
 scene.add(directionalLight2)
 
-const directionalLight3 = new DirectionalLight(0x404040)
-directionalLight3.position.x = Math.random() - 0.5
-directionalLight3.position.y = Math.random() - 0.5
-directionalLight3.position.z = Math.random() - 0.5
-directionalLight3.position.normalize()
-scene.add(directionalLight3)
-
 // Box Meshes
-const box1 = new Box()
-const box2 = new Box()
-const box3 = new Box()
-const box4 = new Box()
-box1.geometry.translate(-BOX_SIZE / 2, BOX_SIZE / -2, -BOX_SIZE / 2)
-box2.geometry.translate(BOX_SIZE / 2, BOX_SIZE / -2, -BOX_SIZE / 2)
-box3.geometry.translate(BOX_SIZE / 2, BOX_SIZE / -2, BOX_SIZE / 2)
-box4.geometry.translate(-BOX_SIZE / 2, BOX_SIZE / -2, BOX_SIZE / 2)
-scene.add(box1)
-scene.add(box2)
-scene.add(box3)
-scene.add(box4)
-
-// Ground
-const plane = new Mesh(
-  new PlaneGeometry(BOX_SIZE * 10, BOX_SIZE * 10, 10, 10),
-  new MeshBasicMaterial({ color: 0x555555, wireframe: true })
-)
-plane.geometry.translate(0, 0, BOX_SIZE)
-plane.geometry.rotateX(Math.PI / 180 * 90)
-scene.add(plane)
+const XWIDTH = 4
+const ZWIDTH = 4
+_.times(XWIDTH, (x) => {
+  _.times(ZWIDTH, (z) => {
+    const box1 = new Box()
+    box1.geometry.translate(BOX_SIZE * (x - XWIDTH / 2) + BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE * (z - ZWIDTH / 2) + BOX_SIZE / 2)
+    scene.add(box1)
+  })
+})
 
 export default scene

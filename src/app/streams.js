@@ -2,9 +2,9 @@ import {
   Vector2
 } from 'three'
 import Rx from 'rx-dom'
-import scene from '../scene'
-import camera from '../camera'
-import raycaster from '../raycaster'
+import scene from './scene'
+import camera from './camera'
+import raycaster from './raycaster'
 
 function getPositionFromMouseEvent (event) {
   const { clientX, clientY } = event
@@ -30,10 +30,11 @@ function getIntersects (position) {
   return raycaster.intersectObjects(scene.children)
 }
 
-const clickStream = Rx.DOM.click(document.body)
-const touchStream = Rx.DOM.touchstart ? Rx.DOM.touchstart(document.body) : new Rx.Subject()
+export const clickStream = Rx.DOM.click(window)
 
-const interactStream = clickStream
+export const touchStream = Rx.DOM.touchstart ? Rx.DOM.touchstart(window) : new Rx.Subject()
+
+export const interactStream = clickStream
   .map(getPositionFromMouseEvent)
   .merge(touchStream.map(getPositionFromTouchEvent))
   .throttle(250)
@@ -41,4 +42,7 @@ const interactStream = clickStream
   .filter(intersects => intersects.length > 0)
   .map(intersects => intersects[0])
 
-export default interactStream
+export const mousemoveStream = Rx.DOM.mousemove(window)
+  .throttle(50)
+  .map(getPositionFromMouseEvent)
+  .map(getIntersects)
