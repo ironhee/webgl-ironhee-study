@@ -15,10 +15,11 @@ boxTexture.magFilter = NearestFilter
 boxTexture.minFilter = LinearMipMapLinearFilter
 
 class Box extends Mesh {
-  constructor (
-    geometry = new BoxBufferGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE),
-    material = new MeshLambertMaterial({ map: boxTexture })
-  ) {
+  constructor (options = {}) {
+    const {
+      geometry = new BoxBufferGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE),
+      material = new MeshLambertMaterial({ map: boxTexture })
+    } = options
     geometry.computeBoundingSphere()
     super(geometry, material)
     this.basicColor = this.material.color.getHex()
