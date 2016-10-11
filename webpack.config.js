@@ -1,7 +1,7 @@
 var path = require('path')
 module.exports = {
   devServer: {
-    contentBase: 'public/',
+    contentBase: 'docs/',
     inline: true,
     host: '0.0.0.0'
   },
@@ -9,7 +9,7 @@ module.exports = {
     main: ['babel-polyfill', './src/main.js']
   },
   output: {
-    path: path.resolve(__dirname, 'public/assets/'),
+    path: path.resolve(__dirname, 'docs/assets/'),
     publicPath: '/assets/',
     filename: 'main.js'
   },

@@ -7,7 +7,7 @@
     "start": "webpack-dev-server",
     "lint": "standard --verbose",
     "build": "webpack",
-    "add-result-to-git": "git add public/assets/main.js"
+    "add-result-to-git": "git add docs/assets/main.js"
   },
   "pre-commit": [
     "lint",
@@ -16,7 +16,7 @@
   ],
   "standard": {
     "ignore": [
-      "public/"
+      "docs/"
     ]
   },
   "devDependencies": {
