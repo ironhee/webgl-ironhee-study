@@ -1,2 +1,3 @@
 # WebGL study for ironhee
-Learn WebGL! :D
+
+See [study result](https://ironhee.github.io/webgl-ironhee-study/).
