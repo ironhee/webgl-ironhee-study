@@ -9,7 +9,7 @@ module.exports = {
     main: ['babel-polyfill', './src/main.js']
   },
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'public/assets/'),
     publicPath: '/assets/',
     filename: 'main.js'
   },

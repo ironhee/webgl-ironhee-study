@@ -10,7 +10,7 @@ import {
   BOX_SIZE
 } from '../config'
 
-const boxTexture = new TextureLoader().load('textures/box.jpg')
+const boxTexture = new TextureLoader().load('assets/box.jpg')
 boxTexture.magFilter = NearestFilter
 boxTexture.minFilter = LinearMipMapLinearFilter
 
