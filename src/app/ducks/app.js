@@ -14,6 +14,7 @@ export const ADD_MODE = 'add'
 export const REMOVE_MODE = 'remove'
 
 // Actions
+export const NONE = 'app/NONE'
 export const RENDER = 'app/RENDER'
 export const MOUSEMOVE = 'app/MOUSEMOVE'
 export const REFRESH_FOCUS = 'app/REFRESH_FOCUS'
@@ -33,7 +34,7 @@ export const changeMode = (mode) => ({ type: CHANGE_MODE, mode })
 export const click = (position) => {
   const { app: { mode, mousePosition } } = store.getState()
   const intersects = getIntersects(mousePosition)
-  if (intersects.length === 0) return () => ({})
+  if (intersects.length === 0) return { type: NONE }
   const intersect = intersects[0]
   switch (mode) {
     case REMOVE_MODE:
@@ -45,7 +46,7 @@ export const click = (position) => {
       position.divideScalar(BOX_SIZE).floor().multiplyScalar(BOX_SIZE).addScalar(BOX_SIZE / 2)
       return addBox(position)
     default:
-      return () => ({})
+      return { type: NONE }
   }
 }
 export const refreshFocus = () => {

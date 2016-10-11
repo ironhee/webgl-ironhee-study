@@ -21,7 +21,11 @@ import renderer from '../renderer'
 class Mode extends React.Component {
 
   componentDidMount () {
-    const { dispatch } = this.props
+    const {
+      onClick,
+      onMousemove,
+      onRefreshFocus
+    } = this.props
 
     // Attach stat
     const stats = new Stats()
@@ -39,13 +43,13 @@ class Mode extends React.Component {
     )
     clickStream
       .throttle(250)
-      .subscribe((position) => dispatch(click(position)))
+      .subscribe((position) => onClick(position))
 
     // Mousemove
     Rx.DOM.mousemove(window)
       .throttle(50)
       .map(getPositionFromMouseEvent)
-      .subscribe((position) => dispatch(mousemove(position)))
+      .subscribe((position) => onMousemove(position))
 
     // Render
     let startTime = null
@@ -56,7 +60,7 @@ class Mode extends React.Component {
         startTime = null
         camera.lookAt(scene.position)
         camera.updateMatrixWorld()
-        dispatch(refreshFocus())
+        onRefreshFocus(timestamp)
         renderer.render(scene, camera)
       }
       stats.update()
@@ -65,8 +69,12 @@ class Mode extends React.Component {
     window.requestAnimationFrame(onFrame)
   }
 
+  shouldComponentUpdate (props) {
+    return this.props.mode !== props.mode
+  }
+
   render () {
-    const { dispatch, mode } = this.props
+    const { onClickMode, mode } = this.props
 
     const style = {
       position: 'fixed',
@@ -76,15 +84,29 @@ class Mode extends React.Component {
     return (
       <div id='control' style={style}>
         <span>MODE: { mode }</span>
-        <button onClick={() => dispatch(changeMode(ADD_MODE))}>ADD</button>
-        <button onClick={() => dispatch(changeMode(REMOVE_MODE))}>REMOVE</button>
+        <button onClick={() => onClickMode(ADD_MODE)}>ADD</button>
+        <button onClick={() => onClickMode(REMOVE_MODE)}>REMOVE</button>
       </div>
     )
   }
 }
 
 export default connect(
-  (state) => state.app
+  (state) => state.app,
+  (dispatch) => ({
+    onClick: (position) => {
+      dispatch(click(position))
+    },
+    onMousemove: (position) => {
+      dispatch(mousemove(position))
+    },
+    onRefreshFocus: (timestamp) => {
+      dispatch(refreshFocus(timestamp))
+    },
+    onClickMode: (mode) => {
+      dispatch(changeMode(mode))
+    }
+  })
 )(Mode)
 
 // Helpers

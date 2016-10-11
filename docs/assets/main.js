@@ -31023,7 +31023,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.refreshFocus = exports.click = exports.changeMode = exports.removeBox = exports.addBox = exports.focusoutBox = exports.focusBox = exports.mousemove = exports.CHANGE_MODE = exports.REMOVE_BOX = exports.ADD_BOX = exports.FOCUSOUT_BOX = exports.FOCUS_BOX = exports.REFRESH_FOCUS = exports.MOUSEMOVE = exports.RENDER = exports.REMOVE_MODE = exports.ADD_MODE = undefined;
+	exports.refreshFocus = exports.click = exports.changeMode = exports.removeBox = exports.addBox = exports.focusoutBox = exports.focusBox = exports.mousemove = exports.CHANGE_MODE = exports.REMOVE_BOX = exports.ADD_BOX = exports.FOCUSOUT_BOX = exports.FOCUS_BOX = exports.REFRESH_FOCUS = exports.MOUSEMOVE = exports.RENDER = exports.NONE = exports.REMOVE_MODE = exports.ADD_MODE = undefined;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -31056,6 +31056,7 @@
 	var REMOVE_MODE = exports.REMOVE_MODE = 'remove';
 
 	// Actions
+	var NONE = exports.NONE = 'app/NONE';
 	var RENDER = exports.RENDER = 'app/RENDER';
 	var MOUSEMOVE = exports.MOUSEMOVE = 'app/MOUSEMOVE';
 	var REFRESH_FOCUS = exports.REFRESH_FOCUS = 'app/REFRESH_FOCUS';
@@ -31092,9 +31093,7 @@
 	  var mousePosition = _store$getState$app.mousePosition;
 
 	  var intersects = (0, _raycaster.getIntersects)(mousePosition);
-	  if (intersects.length === 0) return function () {
-	    return {};
-	  };
+	  if (intersects.length === 0) return { type: NONE };
 	  var intersect = intersects[0];
 	  switch (mode) {
 	    case REMOVE_MODE:
@@ -31106,9 +31105,7 @@
 	      _position.divideScalar(_config.BOX_SIZE).floor().multiplyScalar(_config.BOX_SIZE).addScalar(_config.BOX_SIZE / 2);
 	      return addBox(_position);
 	    default:
-	      return function () {
-	        return {};
-	      };
+	      return { type: NONE };
 	  }
 	};
 	var refreshFocus = exports.refreshFocus = function refreshFocus() {
@@ -90226,7 +90223,10 @@
 	  _createClass(Mode, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var dispatch = this.props.dispatch;
+	      var _props = this.props;
+	      var onClick = _props.onClick;
+	      var onMousemove = _props.onMousemove;
+	      var onRefreshFocus = _props.onRefreshFocus;
 
 	      // Attach stat
 
@@ -90239,12 +90239,12 @@
 	      var touchStream = _rxDom2.default.DOM.touchstart ? _rxDom2.default.DOM.touchstart(window).map(getPositionFromTouchEvent) : new _rxDom2.default.Subject();
 	      var clickStream = _rxDom2.default.Observable.merge(mouseClickStream, touchStream);
 	      clickStream.throttle(250).subscribe(function (position) {
-	        return dispatch((0, _app.click)(position));
+	        return onClick(position);
 	      });
 
 	      // Mousemove
 	      _rxDom2.default.DOM.mousemove(window).throttle(50).map(getPositionFromMouseEvent).subscribe(function (position) {
-	        return dispatch((0, _app.mousemove)(position));
+	        return onMousemove(position);
 	      });
 
 	      // Render
@@ -90258,7 +90258,7 @@
 	          startTime = null;
 	          _camera2.default.lookAt(_scene2.default.position);
 	          _camera2.default.updateMatrixWorld();
-	          dispatch((0, _app.refreshFocus)());
+	          onRefreshFocus(timestamp);
 	          _renderer2.default.render(_scene2.default, _camera2.default);
 	        }
 	        stats.update();
@@ -90267,11 +90267,16 @@
 	      window.requestAnimationFrame(onFrame);
 	    }
 	  }, {
+	    key: 'shouldComponentUpdate',
+	    value: function shouldComponentUpdate(props) {
+	      return this.props.mode !== props.mode;
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props = this.props;
-	      var dispatch = _props.dispatch;
-	      var mode = _props.mode;
+	      var _props2 = this.props;
+	      var onClickMode = _props2.onClickMode;
+	      var mode = _props2.mode;
 
 
 	      var style = {
@@ -90291,14 +90296,14 @@
 	        _react2.default.createElement(
 	          'button',
 	          { onClick: function onClick() {
-	              return dispatch((0, _app.changeMode)(_app.ADD_MODE));
+	              return onClickMode(_app.ADD_MODE);
 	            } },
 	          'ADD'
 	        ),
 	        _react2.default.createElement(
 	          'button',
 	          { onClick: function onClick() {
-	              return dispatch((0, _app.changeMode)(_app.REMOVE_MODE));
+	              return onClickMode(_app.REMOVE_MODE);
 	            } },
 	          'REMOVE'
 	        )
@@ -90311,6 +90316,21 @@
 
 	exports.default = (0, _reactRedux.connect)(function (state) {
 	  return state.app;
+	}, function (dispatch) {
+	  return {
+	    onClick: function onClick(position) {
+	      dispatch((0, _app.click)(position));
+	    },
+	    onMousemove: function onMousemove(position) {
+	      dispatch((0, _app.mousemove)(position));
+	    },
+	    onRefreshFocus: function onRefreshFocus(timestamp) {
+	      dispatch((0, _app.refreshFocus)(timestamp));
+	    },
+	    onClickMode: function onClickMode(mode) {
+	      dispatch((0, _app.changeMode)(mode));
+	    }
+	  };
 	})(Mode);
 
 	// Helpers
